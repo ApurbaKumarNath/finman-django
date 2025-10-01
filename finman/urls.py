@@ -16,8 +16,8 @@ Including another URLconf
 """
 # finman/urls.py
 from django.contrib import admin
-from django.urls import path, include # Make sure to import 'include'
-from users.views import home # <-- ADD THIS IMPORT
+from django.urls import path, include 
+from users.views import home 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +26,6 @@ urlpatterns = [
     # Our custom signup page
     path('accounts/', include('users.urls')),
 
-    path('', home, name='home'), # <-- ADD THIS URL PATTERN
+    path('', home, name='home'), 
+    path('tracker/', include('tracker.urls')),
 ]

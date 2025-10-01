@@ -1,0 +1,6 @@
+<!-- templates/tracker/partials/expense_form.html -->
+<form hx-post="{% url 'add_expense' %}" hx-target="#expense-list" hx-swap="innerHTML" hx-on::after-request="this.reset()">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add Expense</button>
+</form>
