@@ -17,6 +17,20 @@
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     {% csrf_token %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+
+        <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+                </li>
+                <!-- Add this new nav item -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'analytics' %}">Analytics</a>
+                </li>
+            {% endif %}
+        </ul>
+
         <div class="container-fluid">
             <a class="navbar-brand" href="#">FinMan</a>
             <div class="collapse navbar-collapse">

@@ -1,0 +1,49 @@
+<!-- templates/tracker/analytics.html -->
+{% extends 'base.html' %}
+
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+<h2>Financial Analytics</h2>
+<p>Visualize your spending habits by filtering by month and year.</p>
+
+<!-- Filter Form -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="analytics-filter-form"
+              hx-get="{% url 'analytics' %}" 
+              hx-target="#chart-container" 
+              hx-swap="innerHTML"
+              hx-trigger="change">
+
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label for="month" class="form-label">Month</label>
+                    <select id="month" name="month" class="form-select">
+                        {% for m_num, m_name in months %}
+                            <option value="{{ m_num }}" {% if m_num == month %}selected{% endif %}>
+                                {{ m_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="year" class="form-label">Year</label>
+                    <select id="year" name="year" class="form-select">
+                        {% for y in years %}
+                            <option value="{{ y }}" {% if y == year %}selected{% endif %}>{{ y }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Chart Container -->
+<div class="card">
+    <div class="card-body" id="chart-container">
+        {% include 'tracker/partials/chart.html' %}
+    </div>
+</div>
+{% endblock %}
