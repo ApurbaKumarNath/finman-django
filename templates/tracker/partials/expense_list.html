@@ -6,19 +6,15 @@
             <th>Category</th>
             <th>Amount</th>
             <th>Description</th>
+            <th>Actions</th> 
         </tr>
     </thead>
-    <tbody>
+    <tbody id="expense-tbody">
         {% for expense in expenses %}
-        <tr>
-            <td>{{ expense.date|date:"Y-m-d" }}</td>
-            <td>{{ expense.category.name }}</td>
-            <td>${{ expense.amount }}</td>
-            <td>{{ expense.description }}</td>
-        </tr>
+            {% include 'tracker/partials/expense_row.html' %} 
         {% empty %}
         <tr>
-            <td colspan="4" class="text-center">No expenses recorded yet.</td>
+            <td colspan="5" class="text-center">No expenses recorded yet.</td>
         </tr>
         {% endfor %}
     </tbody>

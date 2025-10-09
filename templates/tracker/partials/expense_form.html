@@ -1,5 +1,9 @@
 <!-- templates/tracker/partials/expense_form.html -->
-<form action="{% url 'add_expense' %}" method="POST" hx-post="{% url 'add_expense' %}" hx-target="#expense-list" hx-swap="innerHTML" hx-on:htmx:after-request="this.reset()">
+<form action="{% url 'add_expense' %}" method="POST"
+      hx-post="{% url 'add_expense' %}"
+      hx-target="#expense-tbody"
+      hx-swap="afterbegin"
+      hx-on::after-request="if(event.detail.successful) this.reset()">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Add Expense</button>
