@@ -24,9 +24,17 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
                 </li>
-                <!-- Add this new nav item -->
+
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'analytics' %}">Analytics</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'income_list' %}">Income</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manage_budgets' %}">Budgets</a>
                 </li>
             {% endif %}
         </ul>
@@ -40,7 +48,8 @@
                 <div class="d-flex">
                     {% if user.is_authenticated %}
                         <span class="navbar-text me-3">Welcome, {{ user.username }}!</span>
-                        <form action="{% url 'logout' %}" method="post">
+                        <form action="{% url 'logout' %}" method="post" class="d-flex align-items-center">
+                            <a href="{% url 'profile' %}" class="btn btn-outline-light btn-sm me-2">Profile</a>
                             {% csrf_token %}
                             <button type="submit" class="btn btn-light btn-sm">Logout</button>
                         </form>

@@ -1,0 +1,35 @@
+<!-- templates/tracker/manage_budgets.html -->
+{% load custom_filters %}
+{% extends 'base.html' %}
+{% block title %}Manage Budgets{% endblock %}
+{% block content %}
+<h2>Manage Budgets for {{ current_month_name }}</h2>
+<p>Set a spending limit for each category. Changes are saved automatically when you click away.</p>
+<div class="list-group">
+    {% for category in categories %}
+    <div class="list-group-item">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <strong>{{ category.name }}</strong>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input type="number" step="0.01" class="form-control"
+                           name="amount"
+                           value="{{ budget_map|get_item:category.id|default_if_none:'' }}"
+                           hx-post="{% url 'manage_budgets' %}"
+                           hx-trigger="blur"
+                           hx-vals='{"category_id": "{{ category.id }}"}'
+                           hx-target="#indicator-{{ category.id }}"
+                           hx-swap="innerHTML">
+                </div>
+            </div>
+            <div class="col-md-4" id="indicator-{{ category.id }}">
+                <!-- Success indicator will be loaded here by HTMX -->
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

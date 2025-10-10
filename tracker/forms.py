@@ -1,6 +1,6 @@
 # tracker/forms.py
 from django import forms
-from .models import Expense, Category
+from .models import Expense, Category, Income
 
 class ExpenseForm(forms.ModelForm):
     class Meta:
@@ -16,3 +16,11 @@ class ExpenseForm(forms.ModelForm):
         if user:
             # Filter categories to show only the ones owned by the logged-in user
             self.fields['category'].queryset = Category.objects.filter(user=user)
+
+class IncomeForm(forms.ModelForm):
+    class Meta:
+        model = Income
+        fields = ['date', 'source', 'amount', 'description']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+        }

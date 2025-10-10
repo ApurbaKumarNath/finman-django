@@ -1,6 +1,6 @@
 # tracker/admin.py
 from django.contrib import admin
-from .models import Category, Expense
+from .models import Category, Expense, Income, Budget
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -14,3 +14,13 @@ class ExpenseAdmin(admin.ModelAdmin):
     search_fields = ('description', 'category__name')
     list_filter = ('user', 'category', 'date')
     list_per_page = 20 # Add pagination
+
+@admin.register(Income)
+class IncomeAdmin(admin.ModelAdmin):
+    list_display = ('date', 'user', 'source', 'amount')
+    list_filter = ('user', 'date')
+    search_fields = ('source', 'description')
+
+@admin.register(Budget)
+class BudgetAdmin(admin.ModelAdmin):
+    list_display = ('user', 'category', 'amount', 'month', 'year')

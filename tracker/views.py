@@ -1,12 +1,12 @@
 # tracker/views.py
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .forms import ExpenseForm
+from .forms import ExpenseForm, IncomeForm
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, QueryDict
+from django.http import HttpResponse, QueryDict, HttpResponseBadRequest
 from datetime import datetime
 from django.db.models import Sum
-from .models import Category, Expense
+from .models import Category, Expense, Income, Budget
 import plotly.express as px
 import pandas as pd
 
@@ -143,3 +143,74 @@ def analytics_view(request):
     
     # Otherwise, return the full page
     return render(request, 'tracker/analytics.html', context)
+
+@login_required
+def income_list(request):
+    incomes = Income.objects.filter(user=request.user)
+    form = IncomeForm()
+    
+    if request.method == 'POST':
+        form = IncomeForm(request.POST)
+        if form.is_valid():
+            income = form.save(commit=False)
+            income.user = request.user
+            income.save()
+            # On success, return the updated list of incomes
+            incomes = Income.objects.filter(user=request.user)
+            return render(request, 'tracker/partials/income_list.html', {'incomes': incomes})
+    
+    # For GET requests, render the full page
+    return render(request, 'tracker/income_list.html', {
+        'incomes': incomes,
+        'form': form
+    })
+
+
+@login_required
+def manage_budgets(request):
+    # Default to current month and year
+    current_year = datetime.now().year
+    current_month = datetime.now().month
+
+    if request.method == 'POST':
+        try:
+            amount = request.POST.get('amount')
+            category_id = request.POST.get('category_id')
+            
+            # Basic validation
+            if not amount or not category_id:
+                return HttpResponseBadRequest("Missing amount or category.")
+            
+            amount = float(amount)
+            if amount < 0:
+                return HttpResponseBadRequest("Amount cannot be negative.")
+
+            category = get_object_or_404(Category, id=category_id, user=request.user)
+            
+            # Use update_or_create for efficiency. It finds a budget or creates a new one.
+            budget, created = Budget.objects.update_or_create(
+                user=request.user,
+                category=category,
+                year=current_year,
+                month=current_month,
+                defaults={'amount': amount}
+            )
+            # Return a partial that shows a success message
+            return render(request, 'tracker/partials/budget_success_indicator.html')
+
+        except (ValueError, Category.DoesNotExist):
+            return HttpResponseBadRequest("Invalid data provided.")
+
+    # For a GET request, prepare the data for the main page
+    categories = Category.objects.filter(user=request.user)
+    budgets = Budget.objects.filter(user=request.user, year=current_year, month=current_month)
+    
+    # Create a dictionary for easy lookup in the template
+    budget_map = {budget.category.id: budget.amount for budget in budgets}
+    
+    context = {
+        'categories': categories,
+        'budget_map': budget_map,
+        'current_month_name': datetime(current_year, current_month, 1).strftime('%B %Y')
+    }
+    return render(request, 'tracker/manage_budgets.html', context)

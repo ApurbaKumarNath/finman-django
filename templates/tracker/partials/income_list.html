@@ -1,0 +1,18 @@
+<!-- templates/tracker/partials/income_list.html -->
+<table class="table">
+    <thead>
+        <tr><th>Date</th><th>Source</th><th>Amount</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+        {% for income in incomes %}
+        <tr>
+            <td>{{ income.date|date:"Y-m-d" }}</td>
+            <td>{{ income.source }}</td>
+            <td>${{ income.amount }}</td>
+            <td>{{ income.description|default_if_none:'' }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center">No income recorded yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
